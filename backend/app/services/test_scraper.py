@@ -25,6 +25,10 @@ def save_jobs_to_html(jobs, filename="job_debug.html"):
             f.write(f"<strong>Location:</strong> {job['location']}<br>")
             f.write(f"<strong>Description:</strong> {job['description']}<br>")
             f.write(f"<strong>Source:</strong> {job['source']}<br>")
+            f.write(f"<strong>Scraped At:</strong> {job['scraped_at']}<br>")
+            f.write(f"<strong>Posted At:</strong> {job['posted_at']}<br>")
+            f.write(f"<strong>Salary:</strong> {job.get('salary', '')}<br>")
+            f.write(f"<strong>Link:</strong> <a href='{job.get('link', '#')}' target='_blank'>{job.get('link', '')}</a><br>")
             f.write("</li><hr>")
         f.write("</ul></body></html>")
 
@@ -38,16 +42,41 @@ def remove_duplicates(jobs):
             unique_jobs.append(job)
     return unique_jobs
 
+def job_exists(title, company, location):
+    response = supabase.table("jobs") \
+        .select("id") \
+        .ilike("title", title) \
+        .ilike("company", company) \
+        .ilike("location", location) \
+        .limit(1) \
+        .execute()
+    return len(response.data) > 0
+
 def insert_jobs(jobs):
     for job in jobs:
+        if job_exists(job["title"], job["company"], job["location"]):
+            print(f"⚠️ Skipped duplicate: {job['title']} at {job['company']}")
+            continue
+
+        # Prepare data dict
         data = {
             "title": job["title"],
             "company": job["company"],
             "location": job["location"],
             "description": job["description"],
             "source": job["source"],
-            "query": job.get("query")
+            "query": job.get("query"),
+            "scraped_at": job.get("scraped_at"),
+            "posted_at": job.get("posted_at"),
+            "salary": job.get("salary"),
+            "link": job.get("link")
         }
+
+        # Convert datetime objects to ISO 8601 strings
+        if data.get("scraped_at") and hasattr(data["scraped_at"], "isoformat"):
+            data["scraped_at"] = data["scraped_at"].isoformat()
+        if data.get("posted_at") and hasattr(data["posted_at"], "isoformat"):
+            data["posted_at"] = data["posted_at"].isoformat()
 
         try:
             response = supabase.table("jobs").insert(data).execute()
@@ -57,6 +86,7 @@ def insert_jobs(jobs):
                 print(f"✅ Inserted job: {data['title']} at {data['company']}")
         except Exception as e:
             print(f"❌ Error inserting job: {data['title']} at {data['company']} — {e}")
+
 
 if __name__ == "__main__":
     queries = [
