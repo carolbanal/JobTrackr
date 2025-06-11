@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, DateTime
+from datetime import datetime
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -13,3 +14,5 @@ class Job(Base):
     salary = Column(String(255))
     description = Column(Text)
     source = Column(String(50))
+    posted_at = Column(DateTime(timezone=True), nullable=True)
+    scraped_at = Column(DateTime(timezone=True), default=datetime.utcnow)
