@@ -95,6 +95,23 @@ if __name__ == "__main__":
         "data analyst",
         "machine learning engineer",
         "business intelligence analyst",
+        "Product Designer",
+        "UX Designer",
+        "UI/UX designer",
+        "UI Designer",
+        "Design Systems",
+        "Digital Designer",
+        "Lead UX Designer",
+        "Lead UI/UX designer",
+        "Lead UI Designer",
+        "Lead Design Systems",
+        "Lead Digital Designer",
+        "Senior Product Designer",
+        "Senior UX Designer",
+        "Senior UI/UX designer",
+        "Senior UI Designer",
+        "Senior Design Systems",
+        "Senior Digital Designer",
     ]
 
     all_jobs = []
