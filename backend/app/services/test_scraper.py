@@ -65,7 +65,6 @@ def insert_jobs(jobs):
             "location": job["location"],
             "description": job["description"],
             "source": job["source"],
-            "query": job.get("query"),
             "scraped_at": job.get("scraped_at"),
             "posted_at": job.get("posted_at"),
             "salary": job.get("salary"),

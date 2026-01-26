@@ -1,5 +1,5 @@
 import os
-from serpapi import GoogleSearch
+from serpapi import Client
 from dotenv import load_dotenv
 import requests
 from bs4 import BeautifulSoup
@@ -15,14 +15,12 @@ def scrape_indeed_jobs(query="python developer", location="Philippines", limit=1
     if not api_key:
         raise ValueError("SERPAPI_KEY is not set in environment variables")
 
-    search = GoogleSearch({
+    client = Client(api_key=api_key)
+    results = client.search({
         "engine": "google_jobs",
         "q": query,
         "location": location,
-        "api_key": api_key,
     })
-
-    results = search.get_dict()
 
     if "jobs_results" not in results:
         print(f"❌ No jobs found or SerpAPI error for query: {query}")
